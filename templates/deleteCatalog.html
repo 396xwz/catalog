@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="col-md-10 col-md-offset-1">
+        <h2>Delete Catalog</h2>
+        {% if empty == 0 %}
+            <p>Are you sure you want to delete {{catalog_name}}?</p>
+            <form method="post">
+                <input type='submit' value='Submit'>
+                <a href="{{url_for('showCatalogItems', catalogName = catalog_name)}}">Cancel</a>
+            </form>
+        {% else %}
+            <p>Catalog {{catalog_name}} is not empty. You can not delete it.</p>
+            <a href="{{url_for('showCatalogItems', catalogName = catalog_name)}}">Cancel</a>
+        {% endif %}
+    </div>
+        
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends "main.html" %}
+
+{% block content %}
+        <div class="row top-menu">
+                <div class="col-md-10"></div>
+                <div class="col-md-2 text-right">
+                        <a href="{{url_for('showLogin')}}">Click Here to Log in </a>
+                </div>
+        </div>
+<div class="row top-menu">
+                <div class="col-md-10"></div>
+                <div class="col-md-2 text-right">
+                        <a href="{{url_for('register')}}">Click Here to Register </a>
+                </div>
+        </div>
+
+        <div class="row divider blue">
+                <div class="col-md-12"></div>
+        </div>
+        <div class="row banner main">
+                <div class="col-md-1"></div>
+                <div class="col-md-11 padding-none">
+                        <h1>Catalog</h1>
+                </div>
+        </div>
+
+        <div class = 'flash'>
+                      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+
+        <ul>
+        {% for message in messages %}
+            <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+
+</div>
+
+    <div class="left-col col-md-4">
+        <h2>Categories</h2>
+
+        <div class="addedit">
+        </div>
+
+        <div class="categories">
+            <table>
+                {% for cata in cat %}
+                    <tr>
+                        <td><a href="{{url_for('showCatalogItems', catalogName=cata.name)}}">{{cata.name}}<a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    
+    <div class="right-col col-md-8">
+        <h2>Latest Items</h2>
+
+        <div class="addedit">
+        </div>
+
+        <div class="latest_items">
+            <table>
+                {% for item in latest10Items %}
+                    <tr>
+                        <td><a href="{{url_for('showItemDescription', catalogName=item.cata_name, itemName=item.name)}}">{{item.name}}</a> ({{item.cata_name}})</td>
+                    <tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock %}

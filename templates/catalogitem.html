@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <div class="left-col col-md-4">
+        <h2>Categories</h2>
+
+        <div class="addedit">
+            <a href="{{url_for('newCategory')}}">New </a>
+            |
+            <a href="{{url_for('editCatalog', catalogName=catename)}}">Edit </a>
+            |
+            <a href="{{url_for('deleteCatalog', catalogName=catename)}}">Delete </a>
+            {{catename}}
+    
+        </div>
+
+        <div class="categories">
+            <table>
+                {% for cata in categories %}
+                    <tr>
+                        <td><a href="{{url_for('showCatalogItems', catalogName=cata.name)}}">{{cata.name}}</a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+
+    <div class="right-col col-md-8">
+        <h2>{{catename}} Items ({{items|length}} items)</h2>
+
+        <div class="addedit">
+            <a href="{{url_for('addItem', catalogName=catename)}}">Add Item</a>
+        </div>
+
+        <div class="items">
+     
+            <table>
+                {% for item in items %}
+                    <tr>
+                        <td><a href="{{url_for('showItemDescription', itemName=item.name, catalogName=item.cata_name)}}">{{item.name}}</a></td>
+                    <tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock %}

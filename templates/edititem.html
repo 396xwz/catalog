@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="col-md-10 col-md-offset-1">
+        <h2>Edit Item</h2>
+        <br>
+        <form method = 'post'>
+
+            <table>
+                <tr>
+                    <td>Title</td>
+                    <td><input type='text' name='title' value = '{{item.name}}'></td>
+                </tr>
+                <tr>
+                    <td>Description</td>
+                    <td><textarea type='textarea' name='description'>{{item.description}}</textarea></td>
+                </tr>
+                <tr>
+                    <td>Category</td>
+                    <td>
+                        <select id="category" name="category">
+                            {% for cata in categories %}
+                                {% if cata.name == item.cata_name %}
+                                    <option selected value="{{item.cata_name}}">{{cata.name}}</option>
+                                {% else %}
+                                    <option value="{{cata.name}}">{{cata.name}}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+            </table>
+
+            <input type='submit' value='Save'>
+            <a href="{{url_for('showItemDescription', itemName = item.name, catalogName = item.cata_name)}}">Cancel</a>
+        </form>
+    </div>
+{% endblock %}

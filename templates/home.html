@@ -1,0 +1,45 @@
+{% extends "main.html" %}
+
+{% block content %}
+
+    <div class="left-col col-md-4">
+        <h2>Categories</h2>
+
+        <div class="addedit">
+<!-- GOOGLE PLUS SIGN IN-->
+
+            <a href="{{url_for('newCategory')}}">Add Catagory</a> 
+        </div>
+
+        <div class="categories">
+            <table>
+                {% for cata in categories %}
+                    <tr>
+                        <td><a href="{{url_for('showCatalogItems', catalogName=cata.name)}}">{{cata.name}}<a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    
+    <div class="right-col col-md-8">
+        <h2>Latest Items</h2>
+
+        <div class="addedit">
+            <a href="{{url_for('addItem', catalogName='default')}}">Add Item</a>
+        </div>
+        <div class="deledit">
+            <a href="{{url_for('deleteItem', catalogName='default')}}">Delete Item</a>
+        </div>
+
+        <div class="latest_items">
+            <table>
+                {% for item in latest10Items %}
+                    <tr>
+                        <td><a href="{{url_for('showItemDescription', catalogName=item.cata_name, itemName=item.name)}}">{{item.name}}</a> ({{item.cata_name}})</td>
+                    <tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock %}

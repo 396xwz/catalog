@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="col-md-10 col-md-offset-1">
+        <h2>{{item.name}}</h2>
+        <p>{{item.description}}</p>
+        <div class="addedit">
+            <a href="{{url_for('editItem', itemName=item.name, catalogName=item.cata_name)}}">Edit</a> | 
+            <a href="{{url_for('deleteItem', itemName=item.name, catalogName=item.cata_name)}}">Delete</a>
+        </div>
+    </div>
+{% endblock %}

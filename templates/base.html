@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link type="text/css" rel="stylesheet" href="/static/style.css" />
+        <link type="text/css" rel="stylesheet" href="/static/bootstrap.min.css" />
+        <title>Item Catalog</title>
+    </head>
+
+    <body class="col-md-10 col-md-offset-1">
+        <div class="row">
+            <div id="header">
+                <a class="col-md-8" href="/">Catalog</a>
+                <span class="col-md-4 text-right">
+                    {% if username %}
+                        <a href="#">{{username}}</a>
+                        |
+                        <a href="/logout">Logout</a>
+                    {% else %}
+                        <a href="/login">Login</a>
+                        |
+			<a href="/register">Register</a>
+                    {% endif %}
+                </span>
+            </div>
+            <br>
+            <div id="content">
+                <br>
+                <br>
+                {% block content %}
+                {% endblock %}
+            </div>
+            <br>
+            <div id="footer">
+                <p class="col-md-12 text-right">By Catalog Creations</p>
+            </div>
+        </div>
+    </body>
+</html>
