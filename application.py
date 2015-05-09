@@ -65,7 +65,6 @@ def register():
 def showLogin():
   state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
   login_session['state'] = state
-  #return "The current session state is %s" % login_session['state']
   return render_template('login.html', STATE = state)
 
 @app.route('/fbconnect', methods=['POST'])
@@ -78,7 +77,6 @@ def fbconnect():
   print "access token received %s "% access_token
 
   #Exchange client token for long-lived server-side token
- ## GET /oauth/access_token?grant_type=fb_exchange_token&client_id={app-id}&client_secret={app-secret}&fb_exchange_token={short-lived-token} 
   app_id = json.loads(open('fb_client_secrets.json', 'r').read())['web']['app_id']
   app_secret = json.loads(open('fb_client_secrets.json', 'r').read())['web']['app_secret']
   url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (app_id,app_secret,access_token)
@@ -90,15 +88,15 @@ def fbconnect():
   #strip expire tag from access token
   token = result.split("&")[0]
   
-  url = 'https://graph.facebook.com/v2.2/me?%s' % token
+  url = 'https://graph.facebook.com/v2.3/me?%s' % token
   h = httplib2.Http()
   result = h.request(url, 'GET')[1]
-  print "url sent for API access:%s"% url
-  print "API JSON result: %s" % result
+#  print "url sent for API access:%s"% url
+#  print "API JSON result: %s" % result
   data = json.loads(result)
   login_session['provider'] = 'facebook'
   login_session['username'] = data["name"]
-  login_session['email'] = 'email'
+  login_session['email'] = data["id"] 
   login_session['facebook_id'] = data["id"]
   
 
@@ -297,12 +295,9 @@ def catalogsJSON():
 @app.route('/')
 @app.route('/catalog/')
 def showcatalogs():
-  #catalog = session.query(Catalog).order_by(asc(Catalog.name))
-  #items = session.query(Item, Catalog).outerjoin(Catalog)
   cat = session.query(Categories).all()
   latest10Items = session.query(Items).order_by(Items.create_time.desc()).limit(10).all()
   if 'username' not in login_session:
-    #print catalog
     return render_template('publiccatalogs.html',
                             cat = cat,
 	                    latest10Items = latest10Items)
@@ -445,7 +440,6 @@ def editItem(catalogName, itemName):
 def deleteItem(itemName, catalogName):
     deletedItems = session.query(Items).filter_by(name=itemName, cata_name=catalogName).all()
     categories = session.query(Categories).filter_by(name = catalogName).all()
-#    editedItems = session.query(Items).filter_by(name=itemName, cata_name=catalogName).all()
  
     if 'username' not in login_session:
      return redirect('/login')
