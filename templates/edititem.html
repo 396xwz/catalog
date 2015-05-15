@@ -32,6 +32,7 @@
             </table>
 
             <input type='submit' value='Save'>
+             <input name="_csrf_token" type=hidden value="{{ csrf_token() }}">
             <a href="{{url_for('showItemDescription', itemName = item.name, catalogName = item.cata_name)}}">Cancel</a>
         </form>
     </div>

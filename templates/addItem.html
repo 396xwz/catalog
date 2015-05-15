@@ -4,8 +4,7 @@
     <div class="col-md-10 col-md-offset-1">
         <h2>Add Item</h2>
         <br>
-        <form method = 'post'>
-
+        <form method = 'post' action="">
             <table>
                 <tr>
                     <td>Title</td>
@@ -32,6 +31,7 @@
             </table>
 
             <input type='submit' value='Save'>
+  	 <input name="_csrf_token" type=hidden value="{{ csrf_token() }}">
             <a href="{{url_for('showCatalogItems', catalogName=cataName)}}">Cancel</a>
         </form>
     </div>

@@ -13,7 +13,13 @@ import httplib2
 from register import *
 import json
 from flask import make_response
+
+from flask import abort as flask_abort, request
+from werkzeug.exceptions import default_exceptions, HTTPException
+from flask.exceptions import JSONHTTPException
+
 import requests
+import os
 
 CLIENT_ID = json.loads(
   open('client_secrets.json', 'r').read())['web']['client_id']
@@ -26,6 +32,24 @@ Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
+# CSRF Protection
+@app.before_request
+def csrf_protect():
+    if request.path != "/gconnect":
+     print ""
+    elif request.path != "/fbconnect":
+       if request.method == "POST":
+        token = login_session.pop('_csrf_token', None)
+        if not token or token != request.form.get('_csrf_token'):
+            abort(403)
+def generateRandomString(length = 32):
+     return ''.join(random.choice(string.letters + string.digits) for x in range(length))
+
+def generate_csrf_token():
+    if '_csrf_token' not in login_session:
+        login_session['_csrf_token'] = generateRandomString()
+        # login_session['_csrf_token'] = login_session['state']
+    return login_session['_csrf_token']
 
 #signup user
 @app.route('/register', methods=['GET', 'POST'])
@@ -279,9 +303,8 @@ def catalogItemJSON(catalogName, itemName):
 #JSON APIs to view catalog items 
 @app.route('/catalog/<path:catalogName>/JSON')
 @app.route('/catalog/<path:catalogName>/items/JSON')
-def catalogItemJSON(catalogName):
+def catalogItemsJSON(catalogName):
     items = session.query(Items).filter_by(cata_name=catalogName).all()
-
     return jsonify(Items=[i.serialize for i in items])
 #JSON API to view categories
 @app.route('/catalog/JSON')
@@ -384,7 +407,7 @@ def showItemDescription(itemName, catalogName):
 @app.route('/catalog/<path:catalogName>/additem/', methods=['GET', 'POST'])
 def addItem(catalogName):
     categories = session.query(Categories).filter_by(name = catalogName).all()
-
+    
     if 'username' not in login_session:
      return redirect('/login')
     for ID in categories:
@@ -525,9 +548,34 @@ def disconnect():
     flash("You were not logged in")
     return redirect(url_for('showcatalogs'))
 
+# CSRF Protection
+def abort(status_code, body=None, headers={}):
+    """
+    Content negiate the error response.
+
+    """
+
+    if 'text/html' in request.headers.get("Accept", ""):
+        error_cls = HTTPException
+    else:
+        error_cls = JSONHTTPException
+
+    class_name = error_cls.__name__
+    bases = [error_cls]
+    attributes = {'code': status_code}
+
+    if status_code in default_exceptions:
+        # Mixin the Werkzeug exception
+        bases.insert(0, default_exceptions[status_code])
+
+    error_cls = type(class_name, tuple(bases), attributes)
+    flask_abort(make_response(error_cls(body), status_code, headers))
+
 
 if __name__ == '__main__':
   app.secret_key = 'super_secret_key'
+  app.jinja_env.globals['csrf_token'] = generate_csrf_token 
   app.debug = True
   app.run(host = '0.0.0.0', port = 8080)
+
 
