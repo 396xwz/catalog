@@ -8,7 +8,7 @@
 
 ## Run the virtual machine!
 
-Using the terminal, change directory to Catalog, then type **vagrant up** to launch your virtual machine.
+Using the terminal, change directory to Catalog, then type **vagrant up** to launch your virtual machine. Type **vagrant provision** (first time).
 
 
 ## Running the Catalog App
